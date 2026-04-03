@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Régression Logistique — Poster Scientifique</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a1628;
+    --deep: #0d1f3c;
+    --mid: #1a3560;
+    --accent: #2a6dd9;
+    --gold: #c9a84c;
+    --light-gold: #e8c87a;
+    --cream: #f5f0e8;
+    --light: #dce8f7;
+    --white: #ffffff;
+    --text-light: #a8bcd4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: #e8e0d0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .poster {
+    width: 794px;
+    min-height: 1123px;
+    background: var(--navy);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  }
+
+  /* Background geometric pattern */
+  .poster::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(ellipse 600px 400px at 80% 10%, rgba(42,109,217,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 400px 600px at -10% 80%, rgba(201,168,76,0.08) 0%, transparent 60%);
+    z-index: 0;
+  }
+
+  .grid-lines {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(42,109,217,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(42,109,217,0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: 0;
+  }
+
+  /* Content wrapper */
+  .content { position: relative; z-index: 1; }
+
+  /* ===== HEADER ===== */
+  .header {
+    padding: 40px 50px 30px;
+    border-bottom: 1px solid rgba(201,168,76,0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 50px; right: 50px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), var(--accent), transparent);
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .discipline {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .title {
+    font-family: 'Playfair Display', serif;
+    font-size: 46px;
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.1;
+    letter-spacing: -1px;
+  }
+
+  .title span {
+    color: var(--gold);
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: var(--text-light);
+    letter-spacing: 1px;
+    margin-top: 6px;
+  }
+
+  .badge {
+    background: rgba(42,109,217,0.2);
+    border: 1px solid rgba(42,109,217,0.4);
+    color: var(--light);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    padding: 6px 14px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    align-self: flex-start;
+    margin-top: 4px;
+  }
+
+  /* ===== MAIN GRID ===== */
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    padding: 0;
+  }
+
+  .col { padding: 28px 28px; }
+  .col:not(:last-child) { border-right: 1px solid rgba(255,255,255,0.06); }
+
+  /* ===== SECTION TITLES ===== */
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .section-num {
+    width: 22px; height: 22px;
+    background: var(--gold);
+    color: var(--navy);
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.5px;
+  }
+
+  /* ===== DEFINITION BOX ===== */
+  .def-box {
+    background: rgba(42,109,217,0.08);
+    border-left: 3px solid var(--accent);
+    padding: 14px 16px;
+    border-radius: 0 4px 4px 0;
+    margin-bottom: 16px;
+  }
+
+  .def-text {
+    font-size: 11.5px;
+    color: var(--cream);
+    line-height: 1.7;
+  }
+
+  .def-text strong { color: var(--light-gold); font-weight: 600; }
+
+  /* ===== KEY POINTS ===== */
+  .key-point {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: flex-start;
+  }
+
+  .kp-dot {
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+
+  .kp-text {
+    font-size: 11px;
+    color: var(--text-light);
+    line-height: 1.6;
+  }
+
+  .kp-text strong { color: var(--white); }
+
+  /* ===== FORMULAS ===== */
+  .formula-card {
+    background: rgba(13,31,60,0.8);
+    border: 1px solid rgba(42,109,217,0.25);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+
+  .formula-name {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .formula {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--white);
+    text-align: center;
+    padding: 8px 0;
+  }
+
+  .formula .frac {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    vertical-align: middle;
+    margin: 0 4px;
+  }
+
+  .formula .num { border-bottom: 1px solid var(--text-light); padding-bottom: 2px; }
+  .formula .den { padding-top: 2px; }
+
+  .formula-desc {
+    font-size: 10px;
+    color: var(--text-light);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  .var-row {
+    display: flex;
+    gap: 6px;
+    align-items: baseline;
+    margin-top: 4px;
+  }
+
+  .var-sym {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--light-gold);
+    min-width: 28px;
+  }
+
+  .var-desc {
+    font-size: 10px;
+    color: var(--text-light);
+  }
+
+  /* ===== SIGMOID DIAGRAM ===== */
+  .diagram-title {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-light);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .svg-wrap {
+    background: rgba(13,31,60,0.6);
+    border: 1px solid rgba(42,109,217,0.2);
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 12px;
+  }
+
+  /* ===== CONFUSION MATRIX ===== */
+  .matrix-wrap {
+    display: grid;
+    grid-template-columns: auto 1fr 1fr;
+    grid-template-rows: auto 1fr 1fr;
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+
+  .matrix-corner { background: transparent; }
+
+  .matrix-head {
+    background: rgba(42,109,217,0.2);
+    color: var(--light);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-align: center;
+    padding: 6px 4px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+
+  .matrix-row-head {
+    background: rgba(42,109,217,0.2);
+    color: var(--light);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-align: center;
+    padding: 6px 6px;
+    border-radius: 3px;
+    writing-mode: vertical-lr;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+  }
+
+  .matrix-cell {
+    padding: 10px 8px;
+    border-radius: 4px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .matrix-cell .label {
+    font-size: 10px;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .matrix-cell .sublabel {
+    font-size: 8px;
+    display: block;
+    opacity: 0.7;
+  }
+
+  .tp { background: rgba(42,109,217,0.3); border: 1px solid rgba(42,109,217,0.5); color: var(--light); }
+  .tn { background: rgba(42,109,217,0.3); border: 1px solid rgba(42,109,217,0.5); color: var(--light); }
+  .fp { background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); color: var(--light-gold); }
+  .fn { background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.3); color: var(--light-gold); }
+
+  /* ===== METRICS ===== */
+  .metric-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .metric-card {
+    flex: 1;
+    background: rgba(13,31,60,0.7);
+    border: 1px solid rgba(42,109,217,0.2);
+    border-radius: 5px;
+    padding: 8px 6px;
+    text-align: center;
+  }
+
+  .metric-name {
+    font-size: 8px;
+    color: var(--text-light);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .metric-formula {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    color: var(--white);
+  }
+
+  /* ===== COMPARISON TABLE ===== */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 12px;
+    font-size: 10.5px;
+  }
+
+  .compare-table th {
+    background: rgba(42,109,217,0.2);
+    color: var(--light);
+    font-weight: 600;
+    padding: 7px 10px;
+    text-align: left;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .compare-table td {
+    padding: 7px 10px;
+    color: var(--text-light);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    line-height: 1.4;
+  }
+
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table td:first-child { color: var(--white); font-weight: 600; }
+  .compare-table .yes { color: #5dc87a; }
+  .compare-table .no { color: #e07070; }
+
+  /* ===== ALGO STEPS ===== */
+  .step {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 10px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 24px; height: 24px;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .step-text {
+    font-size: 11px;
+    color: var(--text-light);
+    line-height: 1.6;
+    padding-top: 3px;
+  }
+
+  .step-text strong { color: var(--white); }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    padding: 16px 50px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-text {
+    font-size: 9px;
+    color: rgba(168,188,212,0.5);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .gold-line {
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--accent), transparent);
+    position: absolute;
+    top: 0; left: 0; right: 0;
+  }
+
+  /* ===== DIVIDER ===== */
+  .row-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.06);
+    margin: 0 28px;
+  }
+
+  .full-row {
+    padding: 22px 28px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .full-row-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+
+  .highlight-pill {
+    display: inline-block;
+    background: rgba(201,168,76,0.15);
+    border: 1px solid rgba(201,168,76,0.3);
+    color: var(--light-gold);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+
+  .app-card {
+    background: rgba(13,31,60,0.5);
+    border: 1px solid rgba(42,109,217,0.15);
+    border-radius: 5px;
+    padding: 12px 14px;
+  }
+
+  .app-icon {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+
+  .app-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+
+  .app-desc {
+    font-size: 10px;
+    color: var(--text-light);
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+<div class="poster">
+  <div class="gold-line"></div>
+  <div class="grid-lines"></div>
+
+  <div class="content">
+
+    <!-- HEADER -->
+    <div class="header">
+      <div class="header-top">
+        <div>
+          <div class="discipline">Statistiques & Apprentissage Automatique</div>
+          <div class="title">Régression<br><span>Logistique</span></div>
+          <div class="subtitle">Modélisation de la probabilité — Classification binaire & multiclasse</div>
+        </div>
+        <div class="badge">Poster Scientifique</div>
+      </div>
+    </div>
+
+    <!-- MAIN 3-COL GRID -->
+    <div class="main">
+
+      <!-- COL 1: DEFINITION + ALGO -->
+      <div class="col">
+        <div class="section-label">
+          <div class="section-num">1</div>
+          <div class="section-title">Définition</div>
+        </div>
+
+        <div class="def-box">
+          <div class="def-text">
+            La régression logistique est un modèle de <strong>classification supervisée</strong> qui estime la
+            <strong>probabilité d'appartenance</strong> à une classe à partir de variables explicatives.
+            Contrairement à son nom, elle résout un problème de <strong>classification</strong>, non de régression.
+          </div>
+        </div>
+
+        <div class="key-point">
+          <div class="kp-dot"></div>
+          <div class="kp-text"><strong>Variable cible :</strong> binaire (0 ou 1) ou multiclasse</div>
+        </div>
+        <div class="key-point">
+          <div class="kp-dot"></div>
+          <div class="kp-text"><strong>Sortie :</strong> probabilité P(Y=1|X) ∈ [0, 1]</div>
+        </div>
+        <div class="key-point">
+          <div class="kp-dot"></div>
+          <div class="kp-text"><strong>Décision :</strong> seuil de 0.5 par défaut</div>
+        </div>
+        <div class="key-point">
+          <div class="kp-dot"></div>
+          <div class="kp-text"><strong>Hypothèse :</strong> relation linéaire entre le logit et les prédicteurs</div>
+        </div>
+
+        <div style="margin-top: 20px;">
+          <div class="section-label">
+            <div class="section-num">4</div>
+            <div class="section-title">Algorithme d'entraînement</div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-text"><strong>Initialiser</strong> les poids θ à zéro ou aléatoirement</div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-text"><strong>Calculer</strong> ŷ = σ(Xθ) pour chaque observation</div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-text"><strong>Évaluer</strong> la perte avec la log-vraisemblance négative</div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-text"><strong>Mettre à jour</strong> θ par descente de gradient</div>
+          </div>
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-text"><strong>Répéter</strong> jusqu'à convergence</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COL 2: FORMULAS + SIGMOID -->
+      <div class="col">
+        <div class="section-label">
+          <div class="section-num">2</div>
+          <div class="section-title">Formules Clés</div>
+        </div>
+
+        <div class="formula-card">
+          <div class="formula-name">Fonction Sigmoïde (Logistique)</div>
+          <div class="formula">σ(z) = 1 / (1 + e⁻ᶻ)</div>
+          <div class="formula-desc">
+            <div class="var-row"><span class="var-sym">z</span><span class="var-desc">= β₀ + β₁x₁ + ... + βₙxₙ  (combinaison linéaire)</span></div>
+            <div class="var-row"><span class="var-sym">σ(z)</span><span class="var-desc">= probabilité prédite ∈ ]0, 1[</span></div>
+          </div>
+        </div>
+
+        <div class="formula-card">
+          <div class="formula-name">Log-Odds (Logit)</div>
+          <div class="formula">logit(p) = ln(p / (1-p)) = Xβ</div>
+          <div class="formula-desc">
+            <div class="var-row"><span class="var-sym">p</span><span class="var-desc">= P(Y=1|X) — probabilité de l'événement</span></div>
+            <div class="var-row"><span class="var-sym">β</span><span class="var-desc">= vecteur des coefficients à estimer</span></div>
+          </div>
+        </div>
+
+        <div class="formula-card">
+          <div class="formula-name">Fonction de Perte (Log-Vraisemblance Négative)</div>
+          <div class="formula" style="font-size:11px;">J = -1/m Σ [y·log(ŷ) + (1-y)·log(1-ŷ)]</div>
+          <div class="formula-desc">
+            <div class="var-row"><span class="var-sym">m</span><span class="var-desc">= nombre d'observations</span></div>
+            <div class="var-row"><span class="var-sym">ŷ</span><span class="var-desc">= probabilité prédite par le modèle</span></div>
+          </div>
+        </div>
+
+        <div class="formula-card">
+          <div class="formula-name">Mise à Jour — Descente de Gradient</div>
+          <div class="formula" style="font-size:12px;">β ← β - α · ∂J/∂β</div>
+          <div class="formula-desc">
+            <div class="var-row"><span class="var-sym">α</span><span class="var-desc">= taux d'apprentissage (learning rate)</span></div>
+          </div>
+        </div>
+
+        <!-- SIGMOID GRAPH -->
+        <div class="diagram-title">Courbe Sigmoïde</div>
+        <div class="svg-wrap">
+          <svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" width="100%">
+            <defs>
+              <linearGradient id="curveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#2a6dd9;stop-opacity:0.6"/>
+                <stop offset="100%" style="stop-color:#c9a84c;stop-opacity:0.9"/>
+              </linearGradient>
+            </defs>
+            <!-- Grid -->
+            <line x1="30" y1="10" x2="30" y2="145" stroke="rgba(168,188,212,0.15)" stroke-width="1"/>
+            <line x1="30" y1="145" x2="290" y2="145" stroke="rgba(168,188,212,0.15)" stroke-width="1"/>
+            <line x1="30" y1="77" x2="290" y2="77" stroke="rgba(168,188,212,0.1)" stroke-width="1" stroke-dasharray="4,4"/>
+            <line x1="160" y1="10" x2="160" y2="145" stroke="rgba(168,188,212,0.1)" stroke-width="1" stroke-dasharray="4,4"/>
+            <!-- Labels -->
+            <text x="14" y="13" fill="#a8bcd4" font-size="8" font-family="JetBrains Mono">1</text>
+            <text x="14" y="80" fill="#a8bcd4" font-size="8" font-family="JetBrains Mono">0.5</text>
+            <text x="14" y="148" fill="#a8bcd4" font-size="8" font-family="JetBrains Mono">0</text>
+            <text x="155" y="158" fill="#a8bcd4" font-size="8" font-family="JetBrains Mono">0</text>
+            <text x="28" y="158" fill="#a8bcd4" font-size="8" font-family="JetBrains Mono">-6</text>
+            <text x="270" y="158" fill="#a8bcd4" font-size="8" font-family="JetBrains Mono">+6</text>
+            <!-- Area fill under curve -->
+            <path d="M30,143 C50,143 60,138 75,125 C90,112 105,95 125,85 C140,77 155,71 160,70 C175,65 185,55 200,44 C215,33 230,20 250,14 C265,10 275,10 290,10 L290,145 Z"
+                  fill="rgba(42,109,217,0.07)"/>
+            <!-- Sigmoid curve -->
+            <path d="M30,143 C50,143 60,138 75,125 C90,112 105,95 125,85 C140,77 155,71 160,70 C175,65 185,55 200,44 C215,33 230,20 250,14 C265,10 275,10 290,10"
+                  fill="none" stroke="url(#curveGrad)" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- Decision threshold dot -->
+            <circle cx="160" cy="70" r="4" fill="#c9a84c"/>
+            <text x="166" y="68" fill="#e8c87a" font-size="8" font-family="JetBrains Mono">seuil = 0.5</text>
+            <!-- Axis labels -->
+            <text x="155" y="8" fill="rgba(168,188,212,0.6)" font-size="7" font-family="Source Sans 3" letter-spacing="1">σ(z)</text>
+            <text x="265" y="155" fill="rgba(168,188,212,0.6)" font-size="7" font-family="Source Sans 3" letter-spacing="1">z</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- COL 3: EVALUATION + COMPARISON -->
+      <div class="col">
+        <div class="section-label">
+          <div class="section-num">3</div>
+          <div class="section-title">Évaluation du Modèle</div>
+        </div>
+
+        <div class="diagram-title" style="text-align:left; margin-bottom:8px;">Matrice de Confusion</div>
+
+        <!-- Confusion matrix -->
+        <div class="matrix-wrap">
+          <div class="matrix-corner"></div>
+          <div class="matrix-head">Prédit: 0</div>
+          <div class="matrix-head">Prédit: 1</div>
+
+          <div class="matrix-row-head">Réel: 0</div>
+          <div class="matrix-cell tn"><span class="label">TN</span><span class="sublabel">Vrai Négatif</span></div>
+          <div class="matrix-cell fp"><span class="label">FP</span><span class="sublabel">Faux Positif</span></div>
+
+          <div class="matrix-row-head">Réel: 1</div>
+          <div class="matrix-cell fn"><span class="label">FN</span><span class="sublabel">Faux Négatif</span></div>
+          <div class="matrix-cell tp"><span class="label">TP</span><span class="sublabel">Vrai Positif</span></div>
+        </div>
+
+        <div class="metric-row">
+          <div class="metric-card">
+            <div class="metric-name">Exactitude</div>
+            <div class="metric-formula">(TP+TN)/N</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-name">Précision</div>
+            <div class="metric-formula">TP/(TP+FP)</div>
+          </div>
+        </div>
+        <div class="metric-row">
+          <div class="metric-card">
+            <div class="metric-name">Rappel</div>
+            <div class="metric-formula">TP/(TP+FN)</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-name">F1-Score</div>
+            <div class="metric-formula">2·P·R/(P+R)</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 16px;">
+          <div class="section-label">
+            <div class="section-num">5</div>
+            <div class="section-title">Comparaison avec la Régression Linéaire</div>
+          </div>
+
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>Critère</th>
+                <th>Logistique</th>
+                <th>Linéaire</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Variable cible</td>
+                <td>Catégorielle</td>
+                <td>Continue</td>
+              </tr>
+              <tr>
+                <td>Sortie</td>
+                <td>P(Y=1) ∈ [0,1]</td>
+                <td>ŷ ∈ ℝ</td>
+              </tr>
+              <tr>
+                <td>Fonction lien</td>
+                <td>Sigmoïde</td>
+                <td>Identité</td>
+              </tr>
+              <tr>
+                <td>Perte</td>
+                <td>Log-loss</td>
+                <td>MSE</td>
+              </tr>
+              <tr>
+                <td>Probabilité</td>
+                <td class="yes">✓ Oui</td>
+                <td class="no">✗ Non</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM ROW: APPLICATIONS -->
+    <div class="full-row">
+      <div class="section-label" style="margin-bottom: 16px;">
+        <div class="section-num">6</div>
+        <div class="section-title">Applications & Cas d'Usage</div>
+      </div>
+      <div class="full-row-inner">
+        <div class="app-card">
+          <div class="app-icon">🏥</div>
+          <div class="app-title">Médecine & Santé</div>
+          <div class="app-desc">Diagnostic de maladies (cancer, diabète), prédiction de risques cardiovasculaires, détection d'anomalies dans les résultats cliniques.</div>
+        </div>
+        <div class="app-card">
+          <div class="app-icon">💳</div>
+          <div class="app-title">Finance & Crédit</div>
+          <div class="app-desc">Scoring de crédit, détection de fraudes bancaires, prédiction de défaut de paiement, évaluation du risque client.</div>
+        </div>
+        <div class="app-card">
+          <div class="app-icon">📧</div>
+          <div class="app-title">NLP & Classification</div>
+          <div class="app-desc">Filtrage de spam, analyse de sentiment, classification de textes, détection de contenu inapproprié.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <div class="footer-text">Statistiques Appliquées — Machine Learning Fondamental</div>
+      <div class="footer-text">Régression Logistique · Poster Pédagogique</div>
+      <div class="footer-text">P(Y=1|X) = σ(Xβ)</div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
