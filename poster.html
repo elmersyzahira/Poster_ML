@@ -537,132 +537,98 @@
 </style>
 </head>
 <body>
+
 <div class="poster">
   <div class="gold-line"></div>
   <div class="grid-lines"></div>
 
   <div class="content">
 
-    <!-- HEADER -->
     <div class="header">
       <div class="header-top">
         <div>
           <div class="discipline">Statistiques & Apprentissage Automatique</div>
           <div class="title">Régression<br><span>Logistique</span></div>
-          <div class="subtitle">Modélisation de la probabilité — Classification binaire & multiclasse</div>
+          <div class="subtitle">Prédire une probabilité, classer une observation [cite: 21]</div>
         </div>
         <div class="badge">Poster Scientifique</div>
       </div>
     </div>
 
-    <!-- MAIN 3-COL GRID -->
     <div class="main">
 
-      <!-- COL 1: DEFINITION + ALGO -->
       <div class="col">
         <div class="section-label">
           <div class="section-num">1</div>
-          <div class="section-title">Définition</div>
+          <div class="section-title">Pourquoi changer de modèle ?</div>
         </div>
 
         <div class="def-box">
           <div class="def-text">
-            La régression logistique est un modèle de <strong>classification supervisée</strong> qui estime la
-            <strong>probabilité d'appartenance</strong> à une classe à partir de variables explicatives.
-            Contrairement à son nom, elle résout un problème de <strong>classification</strong>, non de régression.
+            Quand notre cible n'est plus un nombre continu mais une <strong>classe (0 ou 1)</strong>, on passe à la régression logistique[cite: 1]. La régression linéaire est limitée car elle prédit des valeurs sans bornes (ex: -0.4 ou 1.3), ce qui n'a <strong>aucun sens pour une probabilité</strong>[cite: 9, 11].
           </div>
         </div>
 
         <div class="key-point">
           <div class="kp-dot"></div>
-          <div class="kp-text"><strong>Variable cible :</strong> binaire (0 ou 1) ou multiclasse</div>
+          <div class="kp-text"><strong>Variable cible :</strong> Catégorie binaire (oui/non, succès/échec) [cite: 6]</div>
         </div>
         <div class="key-point">
           <div class="kp-dot"></div>
-          <div class="kp-text"><strong>Sortie :</strong> probabilité P(Y=1|X) ∈ [0, 1]</div>
+          <div class="kp-text"><strong>Sortie :</strong> Probabilité toujours comprise entre 0 et 1 [cite: 10, 25]</div>
         </div>
         <div class="key-point">
           <div class="kp-dot"></div>
-          <div class="kp-text"><strong>Décision :</strong> seuil de 0.5 par défaut</div>
-        </div>
-        <div class="key-point">
-          <div class="kp-dot"></div>
-          <div class="kp-text"><strong>Hypothèse :</strong> relation linéaire entre le logit et les prédicteurs</div>
+          <div class="kp-text"><strong>Fonction :</strong> Utilise la sigmoïde pour transformer la sortie linéaire [cite: 13]</div>
         </div>
 
         <div style="margin-top: 20px;">
           <div class="section-label">
             <div class="section-num">4</div>
-            <div class="section-title">Algorithme d'entraînement</div>
+            <div class="section-title">Le Seuil de Décision</div>
           </div>
-
+          <div class="def-text" style="font-size: 0.85em; margin-bottom: 10px;">
+            Le modèle calcule une probabilité, puis applique un seuil (souvent 0.5) pour classer l'individu[cite: 44, 47]:
+          </div>
           <div class="step">
             <div class="step-num">1</div>
-            <div class="step-text"><strong>Initialiser</strong> les poids θ à zéro ou aléatoirement</div>
+            <div class="step-text"><strong>Si P > 0.5 :</strong> On prédit la classe 1 (Succès) [cite: 48]</div>
           </div>
           <div class="step">
             <div class="step-num">2</div>
-            <div class="step-text"><strong>Calculer</strong> ŷ = σ(Xθ) pour chaque observation</div>
+            <div class="step-text"><strong>Sinon :</strong> On prédit la classe 0 (Échec) [cite: 49]</div>
           </div>
-          <div class="step">
-            <div class="step-num">3</div>
-            <div class="step-text"><strong>Évaluer</strong> la perte avec la log-vraisemblance négative</div>
-          </div>
-          <div class="step">
-            <div class="step-num">4</div>
-            <div class="step-text"><strong>Mettre à jour</strong> θ par descente de gradient</div>
-          </div>
-          <div class="step">
-            <div class="step-num">5</div>
-            <div class="step-text"><strong>Répéter</strong> jusqu'à convergence</div>
+          <div class="step" style="background: rgba(201, 168, 76, 0.1);">
+            <div class="step-num">!</div>
+            <div class="step-text">À <strong>z = 0</strong>, la probabilité est exactement de <strong>0.5</strong> [cite: 58]</div>
           </div>
         </div>
       </div>
 
-      <!-- COL 2: FORMULAS + SIGMOID -->
       <div class="col">
         <div class="section-label">
           <div class="section-num">2</div>
-          <div class="section-title">Formules Clés</div>
+          <div class="section-title">Formules Mathématiques</div>
         </div>
 
         <div class="formula-card">
-          <div class="formula-name">Fonction Sigmoïde (Logistique)</div>
-          <div class="formula">σ(z) = 1 / (1 + e⁻ᶻ)</div>
+          <div class="formula-name">Fonction Sigmoïde </div>
+          <div class="formula">P(Y=1|X) = 1 / (1 + e⁻⁽ᵃˣ⁺ᵇ⁾)</div>
           <div class="formula-desc">
-            <div class="var-row"><span class="var-sym">z</span><span class="var-desc">= β₀ + β₁x₁ + ... + βₙxₙ  (combinaison linéaire)</span></div>
-            <div class="var-row"><span class="var-sym">σ(z)</span><span class="var-desc">= probabilité prédite ∈ ]0, 1[</span></div>
+            <div class="var-row"><span class="var-sym">ax+b</span><span class="var-desc">= Fonction linéaire des variables d'entrée [cite: 37]</span></div>
+            <div class="var-row"><span class="var-sym">e</span><span class="var-desc">= Nombre d'Euler (≈ 2,718) [cite: 39]</span></div>
           </div>
         </div>
 
         <div class="formula-card">
-          <div class="formula-name">Log-Odds (Logit)</div>
-          <div class="formula">logit(p) = ln(p / (1-p)) = Xβ</div>
-          <div class="formula-desc">
-            <div class="var-row"><span class="var-sym">p</span><span class="var-desc">= P(Y=1|X) — probabilité de l'événement</span></div>
-            <div class="var-row"><span class="var-sym">β</span><span class="var-desc">= vecteur des coefficients à estimer</span></div>
+          <div class="formula-name">Propriétés de la Sigmoïde [cite: 57]</div>
+          <div class="def-text" style="font-size: 0.8em; color: #a8bcd4;">
+            • Approche <strong>0</strong> pour de très petites valeurs de z.<br>
+            • Approche <strong>1</strong> pour de très grandes valeurs de z.
           </div>
         </div>
 
-        <div class="formula-card">
-          <div class="formula-name">Fonction de Perte (Log-Vraisemblance Négative)</div>
-          <div class="formula" style="font-size:11px;">J = -1/m Σ [y·log(ŷ) + (1-y)·log(1-ŷ)]</div>
-          <div class="formula-desc">
-            <div class="var-row"><span class="var-sym">m</span><span class="var-desc">= nombre d'observations</span></div>
-            <div class="var-row"><span class="var-sym">ŷ</span><span class="var-desc">= probabilité prédite par le modèle</span></div>
-          </div>
-        </div>
-
-        <div class="formula-card">
-          <div class="formula-name">Mise à Jour — Descente de Gradient</div>
-          <div class="formula" style="font-size:12px;">β ← β - α · ∂J/∂β</div>
-          <div class="formula-desc">
-            <div class="var-row"><span class="var-sym">α</span><span class="var-desc">= taux d'apprentissage (learning rate)</span></div>
-          </div>
-        </div>
-
-        <!-- SIGMOID GRAPH -->
-        <div class="diagram-title">Courbe Sigmoïde</div>
+        <div class="diagram-title">La Courbe en S (Sigmoïde) [cite: 196]</div>
         <div class="svg-wrap">
           <svg viewBox="0 0 300 160" xmlns="http://www.w3.org/2000/svg" width="100%">
             <defs>
@@ -671,118 +637,79 @@
                 <stop offset="100%" style="stop-color:#c9a84c;stop-opacity:0.9"/>
               </linearGradient>
             </defs>
-            <!-- Grid -->
             <line x1="30" y1="10" x2="30" y2="145" stroke="rgba(168,188,212,0.15)" stroke-width="1"/>
             <line x1="30" y1="145" x2="290" y2="145" stroke="rgba(168,188,212,0.15)" stroke-width="1"/>
             <line x1="30" y1="77" x2="290" y2="77" stroke="rgba(168,188,212,0.1)" stroke-width="1" stroke-dasharray="4,4"/>
             <line x1="160" y1="10" x2="160" y2="145" stroke="rgba(168,188,212,0.1)" stroke-width="1" stroke-dasharray="4,4"/>
-            <!-- Labels -->
             <text x="14" y="13" fill="#a8bcd4" font-size="8" font-family="JetBrains Mono">1</text>
             <text x="14" y="80" fill="#a8bcd4" font-size="8" font-family="JetBrains Mono">0.5</text>
             <text x="14" y="148" fill="#a8bcd4" font-size="8" font-family="JetBrains Mono">0</text>
-            <text x="155" y="158" fill="#a8bcd4" font-size="8" font-family="JetBrains Mono">0</text>
-            <text x="28" y="158" fill="#a8bcd4" font-size="8" font-family="JetBrains Mono">-6</text>
-            <text x="270" y="158" fill="#a8bcd4" font-size="8" font-family="JetBrains Mono">+6</text>
-            <!-- Area fill under curve -->
-            <path d="M30,143 C50,143 60,138 75,125 C90,112 105,95 125,85 C140,77 155,71 160,70 C175,65 185,55 200,44 C215,33 230,20 250,14 C265,10 275,10 290,10 L290,145 Z"
-                  fill="rgba(42,109,217,0.07)"/>
-            <!-- Sigmoid curve -->
             <path d="M30,143 C50,143 60,138 75,125 C90,112 105,95 125,85 C140,77 155,71 160,70 C175,65 185,55 200,44 C215,33 230,20 250,14 C265,10 275,10 290,10"
                   fill="none" stroke="url(#curveGrad)" stroke-width="2.5" stroke-linecap="round"/>
-            <!-- Decision threshold dot -->
             <circle cx="160" cy="70" r="4" fill="#c9a84c"/>
             <text x="166" y="68" fill="#e8c87a" font-size="8" font-family="JetBrains Mono">seuil = 0.5</text>
-            <!-- Axis labels -->
-            <text x="155" y="8" fill="rgba(168,188,212,0.6)" font-size="7" font-family="Source Sans 3" letter-spacing="1">σ(z)</text>
-            <text x="265" y="155" fill="rgba(168,188,212,0.6)" font-size="7" font-family="Source Sans 3" letter-spacing="1">z</text>
           </svg>
         </div>
       </div>
 
-      <!-- COL 3: EVALUATION + COMPARISON -->
       <div class="col">
         <div class="section-label">
           <div class="section-num">3</div>
-          <div class="section-title">Évaluation du Modèle</div>
+          <div class="section-title">Évaluation : Matrice de Confusion</div>
         </div>
 
-        <div class="diagram-title" style="text-align:left; margin-bottom:8px;">Matrice de Confusion</div>
+        <div class="def-text" style="font-size: 0.8em; margin-bottom: 8px;">
+          Elle permet d'identifier les types d'erreurs en comparant les valeurs prédites aux valeurs réelles[cite: 213, 241].
+        </div>
 
-        <!-- Confusion matrix -->
         <div class="matrix-wrap">
           <div class="matrix-corner"></div>
           <div class="matrix-head">Prédit: 0</div>
           <div class="matrix-head">Prédit: 1</div>
 
           <div class="matrix-row-head">Réel: 0</div>
-          <div class="matrix-cell tn"><span class="label">TN</span><span class="sublabel">Vrai Négatif</span></div>
-          <div class="matrix-cell fp"><span class="label">FP</span><span class="sublabel">Faux Positif</span></div>
+          <div class="matrix-cell tn"><span class="label">TN</span><span class="sublabel">Vrai Négatif (0→0)</span></div>
+          <div class="matrix-cell fp"><span class="label">FP</span><span class="sublabel">Faux Positif (0→1)</span></div>
 
           <div class="matrix-row-head">Réel: 1</div>
-          <div class="matrix-cell fn"><span class="label">FN</span><span class="sublabel">Faux Négatif</span></div>
-          <div class="matrix-cell tp"><span class="label">TP</span><span class="sublabel">Vrai Positif</span></div>
+          <div class="matrix-cell fn"><span class="label">FN</span><span class="sublabel">Faux Négatif (1→0)</span></div>
+          <div class="matrix-cell tp"><span class="label">TP</span><span class="sublabel">Vrai Positif (1→1)</span></div>
         </div>
 
-        <div class="metric-row">
-          <div class="metric-card">
-            <div class="metric-name">Exactitude</div>
-            <div class="metric-formula">(TP+TN)/N</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-name">Précision</div>
-            <div class="metric-formula">TP/(TP+FP)</div>
-          </div>
-        </div>
-        <div class="metric-row">
-          <div class="metric-card">
-            <div class="metric-name">Rappel</div>
-            <div class="metric-formula">TP/(TP+FN)</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-name">F1-Score</div>
-            <div class="metric-formula">2·P·R/(P+R)</div>
-          </div>
+        <div class="metric-card" style="margin-top: 10px;">
+          <div class="metric-name">Exactitude (Accuracy) [cite: 241]</div>
+          <div class="metric-formula">(VP + VN) / Total</div>
         </div>
 
         <div style="margin-top: 16px;">
           <div class="section-label">
             <div class="section-num">5</div>
-            <div class="section-title">Comparaison avec la Régression Linéaire</div>
+            <div class="section-title">Comparaison </div>
           </div>
 
           <table class="compare-table">
             <thead>
               <tr>
-                <th>Critère</th>
+                <th>Aspect</th>
                 <th>Logistique</th>
                 <th>Linéaire</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>Variable cible</td>
-                <td>Catégorielle</td>
-                <td>Continue</td>
-              </tr>
-              <tr>
                 <td>Sortie</td>
-                <td>P(Y=1) ∈ [0,1]</td>
-                <td>ŷ ∈ ℝ</td>
+                <td>Entre 0 et 1</td>
+                <td>Toute valeur réelle</td>
               </tr>
               <tr>
-                <td>Fonction lien</td>
-                <td>Sigmoïde</td>
-                <td>Identité</td>
-              </tr>
-              <tr>
-                <td>Perte</td>
-                <td>Log-loss</td>
-                <td>MSE</td>
-              </tr>
-              <tr>
+                <td>Interprétation</td>
                 <td>Probabilité</td>
-                <td class="yes">✓ Oui</td>
-                <td class="no">✗ Non</td>
+                <td>Prédiction directe</td>
+              </tr>
+              <tr>
+                <td>Problème</td>
+                <td>Classification</td>
+                <td>Valeur continue</td>
               </tr>
             </tbody>
           </table>
@@ -790,11 +717,10 @@
       </div>
     </div>
 
-    <!-- BOTTOM ROW: APPLICATIONS -->
     <div class="full-row">
       <div class="section-label" style="margin-bottom: 16px;">
         <div class="section-num">6</div>
-        <div class="section-title">Applications & Cas d'Usage</div>
+        <div class="section-title">Applications Typiques </div>
       </div>
       <div class="full-row-inner">
         <div class="app-card">
@@ -815,14 +741,13 @@
       </div>
     </div>
 
-    <!-- FOOTER -->
     <div class="footer">
-      <div class="footer-text">Statistiques Appliquées — Machine Learning Fondamental</div>
-      <div class="footer-text">Régression Logistique · Poster Pédagogique</div>
-      <div class="footer-text">P(Y=1|X) = σ(Xβ)</div>
+      <div class="footer-text">Faculté des Sciences Ben M'Sick — Université Hassan II </div>
+      <div class="footer-text">Régression Logistique · Support Pédagogique</div>
+      <div class="footer-text">σ(z) = 1 / (1 + e⁻ᶻ) [cite: 52]</div>
     </div>
 
   </div>
 </div>
 </body>
-</html>
+</html> 
